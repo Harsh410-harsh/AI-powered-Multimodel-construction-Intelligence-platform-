@@ -1,6 +1,20 @@
 import {useEffect,useState} from 'react';
 import {Activity,ShieldCheck,ScanLine,Calculator,ClipboardList,CloudSun,MessageCircle,History,Upload,HardHat,Building2,Menu,AlertTriangle,CheckCircle2,ArrowUpRight,LoaderCircle} from 'lucide-react';
-const api=async(path,options={})=>{const r=await fetch(path,options);const d=await r.json().catch(()=>({detail:'Unexpected response'}));if(!r.ok)throw Error(d.detail||'Request failed');return d};
+const API_BASE = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+
+const api = async (path, options = {}) => {
+  const url = /^https?:\/\//i.test(path)
+    ? path
+    : `${API_BASE}${path}`;
+
+  const r = await fetch(url, options);
+  const d = await r.json().catch(() => ({
+    detail: 'Unexpected response'
+  }));
+
+  if (!r.ok) throw Error(d.detail || 'Request failed');
+  return d;
+};
 const cash=(n,c='INR')=>new Intl.NumberFormat('en-IN',{style:'currency',currency:c,maximumFractionDigits:0}).format(n||0);
 function Heading({title,desc,icon:Icon}){return <div className="heading"><div className="heading-icon"><Icon size={22}/></div><div><small>CONSTRUCTION INTELLIGENCE</small><h1>{title}</h1><p>{desc}</p></div></div>}
 function Notice({children,danger=false}){return <div className={'notice '+(danger?'danger':'')}><AlertTriangle size={17}/>{children}</div>}
